@@ -1,0 +1,23 @@
+# Syntax Colouring Map For TLCBuffer
+
+# Data types (KEYWORD1)
+TLCBuffer	KEYWORD1
+
+
+# Methods and Functions (KEYWORD2)
+begin	KEYWORD2
+reset	KEYWORD2
+getSize	KEYWORD2
+
+requestReady	KEYWORD2
+readSensor	KEYWORD2
+getCO2Concentration	KEYWORD2
+
+
+
+# Constants (LITERAL1)
+TLCBuffer_LIB_VERSION	LITERAL1
+
+TLCBuffer_DEFAULT_ADDRESS	LITERAL1
+
+TLCBuffer_OK	LITERAL1
