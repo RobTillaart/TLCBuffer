@@ -16,7 +16,7 @@
 
 //  ERROR CODES
 //  values <> 0 are errors.
-#define TLCBuffer_OK                  0x00
+#define TLCBUFFER_OK                  0x00
 
 
 class TLCBuffer

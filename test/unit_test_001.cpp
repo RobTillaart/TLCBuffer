@@ -41,13 +41,17 @@ unittest_teardown()
 
 unittest(test_constants)
 {
-  assertEqual(1, 1);
+  assertEqual(0x00, TLCBUFFER_OK);
 }
 
 
 unittest(test_constructor)
 {
-  TLCBuffer obj;
+  TLCBuffer TLCB(10);
+  
+  asserEqual(10, TLCB.size());
+  asserEqual(0, TLCB.count());
+  
 }
 
 
