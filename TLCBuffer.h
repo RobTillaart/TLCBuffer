@@ -4,7 +4,7 @@
 //  AUTHOR: Rob Tillaart
 //    DATE: 2025-10-26
 // VERSION: 0.1.0
-// PURPOSE: Arduino library for Time Length Compressed circular buffer.
+// PURPOSE: Arduino library for a Time Length Compressed circular buffer.
 //     URL: https://github.com/RobTillaart/TLCBuffer
 //
 
@@ -12,7 +12,7 @@
 #include "Arduino.h"
 
 
-#define TLCBUFFER_LIB_VERSION         (F("0.1.0"))
+#define TLCBUFFER_LIB_VERSION         (F("0.1.0 Work in progress"))
 
 //  ERROR CODES
 //  values <> 0 are errors.
@@ -22,19 +22,38 @@
 class TLCBuffer
 {
   public:
-    TLCBuffer()
+    TLCBuffer(uint32_t size)
     {
-      //  TODO allocate dynamic buffer...
-      reset();
+      _size = size;
+      if (_size < 4) _size = 4;
+      //  allocate dynamic buffer..
+      _buffer = (uint32_t *) malloc(_size * 4);
+      _times = (uint32_t *) malloc(_size * 4);
+    }
+    
+    ~TLCBuffer()
+    {
+      if (_buffer != NULL) free(_buffer);
+      if (_times != NULL) free(_times);
     }
 
-    void reset()
+    //  time units  
+    //  U = micros  M = Millis S = seconds T = Tenths of a second H = Hundreds of a second
+    bool begin(char timeUnits = 'M')
     {
+      if ((_buffer == NULL) || (_times == NULL))
+      {
+        free(_buffer);
+        free(_times);
+        return false;
+      }
+       
+      _index = 0;
+      _count = 0;
+      _timeUnits = timeUnits;
       _lastTime = 0;
       _lastValue = 0;
-      _index = 0;
-      _buffer[0] = 0;
-      _times[0] = 0;
+      return true;
     }
 
     void writeValue(uint32_t value)
@@ -43,32 +62,44 @@ class TLCBuffer
       if (value == _lastValue) return;
       _lastValue = value;
       //  write duration of previous value first.
-      _times[_index++] = millis() - _lastTime;
-      _lastTime = millis();
-      //  buffer the next value.
+      uint32_t now = millis();
+      _times[_index++] = now - _lastTime;
+      _lastTime = now;
+      //  buffer the next value in next free slot.
+      if (_index >= _size) _index = 0;
       _buffer[_index] = value;
+      if (_count < _size) _count++;
     }
 
     uint32_t readValue(uint32_t index)
     {
+      //  no check on index
       return _buffer[index];
     }
 
     uint32_t readDuration(uint32_t index)
     {
+      //  no check on index
       return _times[index];
     }
 
     uint32_t size()
     {
-      return _index;
+      return _size;
+    }
+
+    uint32_t count()
+    {
+      return _count;
     }
 
   private:
-    //  1024 bytes in total
-    uint32_t _buffer[128];
-    uint32_t _times[128];
+    uint32_t * _buffer;
+    uint32_t * _times;
+    uint32_t _size;
     uint32_t _index;
+    uint32_t _count;
+    char     _timeUnits;
     uint32_t _lastTime;
     uint32_t _lastValue;
 };

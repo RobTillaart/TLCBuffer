@@ -14,6 +14,9 @@
 Arduino library for a Time Length Compressed Circular Buffer.
 
 TODO RLEBuffer()
+- full()
+- empty()
+- readValue() reads oldest.
 
 
 ## Description
@@ -88,14 +91,14 @@ TODO: create + run performance sketch on hardware.
 #### Should
 
 - need bool begin(size) if allocate fails.
-- investigate template version
+- investigate template version, first get one static version working.
 - switch between micros / millis (default) / seconds ?
 - handle period of 0 properly (any unit)
 
 
 #### Could
 
-- 
+- add unit tests
 
 #### Wont
 

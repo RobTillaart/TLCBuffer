@@ -8,7 +8,7 @@
 #include "TLCBuffer.h"
 
 
-TLCBuffer TLCB;
+TLCBuffer TLCB(20);
 
 
 void setup()
@@ -20,14 +20,44 @@ void setup()
   Serial.println(TLCBUFFER_LIB_VERSION);
   Serial.println();
 
-  TLCB.begin();
+  if (TLCB.begin() == false)
+  {
+    Serial.println("TLCB failed allocating mem");
+    while (1);
+  }
+
+  Serial.print("SIZE:\t");  Serial.println(TLCB.size());
+  Serial.print("COUNT:\t");  Serial.println(TLCB.count());
+  Serial.println();
+
+  //  fill the buffer with random numbers and generate different timestamps
+  for (int i = 0; i < 20; i++)
+  {
+    uint32_t val = random(10);
+    for (int i = 1 + random(50); i > 0; i--)
+    {
+      TLCB.writeValue(val);
+      delay(1);
+    }
+  }
+
+  Serial.print("SIZE:\t");  Serial.println(TLCB.size());
+  Serial.print("COUNT:\t");  Serial.println(TLCB.count());
+  Serial.println();
+
+  for (int i = 0; i < 20; i++)
+  {
+    Serial.print(TLCB.readDuration(i));
+    Serial.print('\t');
+    Serial.println(TLCB.readValue(i));
+  }
+  Serial.println("\ndone...");
+
 }
 
 
 void loop()
 {
-
-  delay(2000);
 }
 
 
