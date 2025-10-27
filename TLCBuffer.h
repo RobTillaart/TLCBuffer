@@ -4,7 +4,7 @@
 //  AUTHOR: Rob Tillaart
 //    DATE: 2025-10-26
 // VERSION: 0.1.0
-// PURPOSE: Arduino library for a Time Length Compressed circular buffer.
+// PURPOSE: Arduino library for a Time Length Compressed buffer.
 //     URL: https://github.com/RobTillaart/TLCBuffer
 //
 
@@ -12,7 +12,7 @@
 #include "Arduino.h"
 
 
-#define TLCBUFFER_LIB_VERSION         (F("0.1.0 Work in progress"))
+#define TLCBUFFER_LIB_VERSION         (F("0.1.0"))
 
 //  ERROR CODES
 //  values <> 0 are errors.

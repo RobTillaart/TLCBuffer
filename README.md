@@ -22,14 +22,14 @@ This library is to store data in a buffer with Time Length Compression.
 
 The library is a spin of of the LogicAnalyzer library as it needs to store as much
 data as possible in limited RAM.
-The data elements of the initial version are uint32_t as that matches my needs for now. 
+The data elements of the initial version are uint32_t as that matches my needs for now.
 In the future the library will be a template class supporting any data type.
 
 
 #### Application Measurements
 
-One has to make measurements and those measurements stays stable for long time and 
-then has some short fluctuations. 
+One has to make measurements and those measurements stays stable for long time and
+then has some short fluctuations.
 Instead of storing many times the same values in the buffer, the library stores how long
 (= duration) the data (= measurement) stays the same.
 
@@ -38,42 +38,42 @@ An example
 ```
 TLCBuffer = { (10000, 15), (200, 16), (550, 17), ...
 ```
-The data stays 10000 milliseconds the value 15 and then for 200 milliseconds the 
+The data stays 10000 milliseconds the value 15 and then for 200 milliseconds the
 value 16, followed by 550 milliseconds of value 17 etc.
 
 #### Application IO
 
-One has to monitor several IO lines (e.g. sensors or buttons etc) and there is little 
+One has to monitor several IO lines (e.g. sensors or buttons etc) and there is little
 change for long time. One can merge multiple IO lines into a byte / uint32_t and store
-that as one data unit. As long as the IO Lines stay the same only the duration is 
+that as one data unit. As long as the IO Lines stay the same only the duration is
 increased. When a button is pressed the value changes for a short time.
 
 ```
 TLCBuffer = { (10000000, 0x0000), (152, 0x0200), (500000, 0x0000), ...
 ```
 very long time no change, then suddenly a short time 1 pin HIGH followed by a long time
-no activity. 
+no activity.
 
 
 ### Notes
 
 The first element of the buffer has default the value 0. Might affect the working.
 
-Instead of the duration it is also possible to add the time-stamp of when the time 
+Instead of the duration it is also possible to add the time-stamp of when the time
 changed. However that means for the duration one has to know the next change.
 Might be a breaking change in the future.
 
 ### Circular Buffer
 
-The first version of the **Time Length Compressed Buffer** is not a circular buffer, 
-again as I do not need that yet.
+The first version of the **Time Length Compressed Buffer** is not a circular buffer,
+again as I do not need that yet. It might be implemented in the future.
 
 ### Related
 
 - https://github.com/RobTillaart/LogicAnalyzer
   - see logicAnalyzer_4_channel_buffer.ino example
-- https://github.com/RobTillaart/RLEBuffer (todo)
-- https://github.com/RobTillaart/TLCBuffer
+- https://github.com/RobTillaart/RLCBuffer uses counter to compress
+- https://github.com/RobTillaart/TLCBuffer uses duration to compress
 
 
 ### Tested
@@ -95,9 +95,9 @@ TODO: create + run performance sketch on hardware.
 ### Constructor
 
 - **TLCBuffer(uint32_t size)** create a buffer of size elements (uint32_t).
-- **~TLCBuffer()** create a circular buffer of size.
-- **bool begin(char timeUnits = 'M')** returns true if allocation succeeded.
-Only if succeeded the function resets the internal variables. 
+- **~TLCBuffer()** destructor, frees allocated memory.
+- **bool begin(char timeUnits = 'm')** returns true if allocation succeeded.
+Only if succeeded the function resets the internal variables.
 Finally it sets the time units (see below), where invalid values are handled as millis().
 
 |  unit  |  unit  |  description  |
@@ -135,12 +135,12 @@ Finally it sets the time units (see below), where invalid values are handled as 
 
 - improve documentation
 - test functionality
-- 
+-
 
 #### Should
 
 - add examples.
-- investigate template version, 
+- investigate template version,
   - first get one simple version working.
 - implement circular behaviour
   - first get base buffer right (derived class circular?)
