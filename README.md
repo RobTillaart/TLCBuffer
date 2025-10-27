@@ -18,28 +18,60 @@ Arduino library for a Time Length Compressed Buffer.
 
 **Experimental**
 
-This library is to store data in a (circular) buffer with Time Length Compression.
+This library is to store data in a buffer with Time Length Compression.
 
 The library is a spin of of the LogicAnalyzer library as it needs to store as much
-data as possible.
+data as possible in limited RAM.
+The data elements of the initial version are uint32_t as that matches my needs for now. 
+In the future the library will be a template class supporting any data type.
 
-One can have a measurement and that measurement stays stable for long time and then
-has some short fluctuations. Instead of storing many the same values in the buffer
-it is stored how long the data stayed the same.
+
+#### Application Measurements
+
+One has to make measurements and those measurements stays stable for long time and 
+then has some short fluctuations. 
+Instead of storing many times the same values in the buffer, the library stores how long
+(= duration) the data (= measurement) stays the same.
 
 An example
 
 ```
-TLCBuffer = { (10000, 15), (200, 20),  ...
+TLCBuffer = { (10000, 15), (200, 16), (550, 17), ...
 ```
-The value stays 10000 millis the value 15 and then for 200 millis the value 20.
+The data stays 10000 milliseconds the value 15 and then for 200 milliseconds the 
+value 16, followed by 550 milliseconds of value 17 etc.
+
+#### Application IO
+
+One has to monitor several IO lines (e.g. sensors or buttons etc) and there is little 
+change for long time. One can merge multiple IO lines into a byte / uint32_t and store
+that as one data unit. As long as the IO Lines stay the same only the duration is 
+increased. When a button is pressed the value changes for a short time.
+
+```
+TLCBuffer = { (10000000, 0x0000), (152, 0x0200), (500000, 0x0000), ...
+```
+very long time no change, then suddenly a short time 1 pin HIGH followed by a long time
+no activity. 
 
 
+### Notes
+
+The first element of the buffer has default the value 0. Might affect the working.
+
+Instead of the duration it is also possible to add the time-stamp of when the time 
+changed. However that means for the duration one has to know the next change.
+Might be a breaking change in the future.
+
+### Circular Buffer
+
+The first version of the **Time Length Compressed Buffer** is not a circular buffer, 
+again as I do not need that yet.
 
 ### Related
 
 - https://github.com/RobTillaart/LogicAnalyzer
-  - logicAnalyzer_4_channel_buffer.ino
+  - see logicAnalyzer_4_channel_buffer.ino example
 - https://github.com/RobTillaart/RLEBuffer (todo)
 - https://github.com/RobTillaart/TLCBuffer
 
@@ -62,9 +94,11 @@ TODO: create + run performance sketch on hardware.
 
 ### Constructor
 
-- **TLCBuffer(uint32_t size)** create a circular buffer of size.
-- **bool begin(char timeUnits = 'M')** returns true if allocation succeeded, resets
-internal variables. Sets the time units (see below).
+- **TLCBuffer(uint32_t size)** create a buffer of size elements (uint32_t).
+- **~TLCBuffer()** create a circular buffer of size.
+- **bool begin(char timeUnits = 'M')** returns true if allocation succeeded.
+Only if succeeded the function resets the internal variables. 
+Finally it sets the time units (see below), where invalid values are handled as millis().
 
 |  unit  |  unit  |  description  |
 |:------:|:------:|:--------------|
@@ -73,42 +107,50 @@ internal variables. Sets the time units (see below).
 |    h   |  0.01  |  hundreds of a second
 |    t   |  0.10  |  tenths of a second
 |    s   |  1.00  |  second
+| other  |  1e-3  |  milliseconds (fall back)
 
 
 ### Meta
 
 - **uint32_t size()** return size set in constructor.
 - **uint32_t count()** return internal counter of elements used.
-
-
+- **uint32_t index()** return internal index.
+- **bool empty()** returns true if buffer has no elements.
+- **bool full()** returns true if buffer has no space left.
+- **uint32_t available()** returns number of available free slots.
 
 ### Read Write
 
-- **void writeValue(uint32_t value)**
-- **uint32_t readValue(uint32_t index)**
+- **void writeData(uint32_t value)**
+- **uint32_t readData(uint32_t index)**
 - **uint32_t readDuration(uint32_t index)**
 
+### Error
+
+- **char getTimeUnit()** returns time unit for convenience.
 
 ## Future
 
 #### Must
 
 - improve documentation
-- test
+- test functionality
+- 
 
 #### Should
 
+- add examples.
+- investigate template version, 
+  - first get one simple version working.
 - implement circular behaviour
   - first get base buffer right (derived class circular?)
   - readValue() reads oldest.
   - need head / tail index.
-- investigate template version, first get one static version working.
-- switch between micros / millis (default) / seconds ?
-- handle period of 0 properly (any unit)
-
+- implement error handling (?)
 
 #### Could
 
+- make timeUnits an enum
 - add unit tests
 
 #### Wont

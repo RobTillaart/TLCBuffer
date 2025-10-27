@@ -20,7 +20,7 @@ void setup()
   Serial.println(TLCBUFFER_LIB_VERSION);
   Serial.println();
 
-  if (TLCB.begin() == false)
+  if (TLCB.begin('m') == false)
   {
     Serial.println("TLCB failed allocating mem");
     while (1);
@@ -36,7 +36,7 @@ void setup()
     uint32_t val = random(10);
     for (int i = 1 + random(50); i > 0; i--)
     {
-      TLCB.writeValue(val);
+      TLCB.writeData(val);
       delay(1);
     }
   }
@@ -49,7 +49,7 @@ void setup()
   {
     Serial.print(TLCB.readDuration(i));
     Serial.print('\t');
-    Serial.println(TLCB.readValue(i));
+    Serial.println(TLCB.readData(i));
   }
   Serial.println("\ndone...");
 
