@@ -11,19 +11,14 @@
 
 # TLCBuffer
 
-Arduino library for a Time Length Compressed Circular Buffer.
-
-TODO RLEBuffer()
-- full()
-- empty()
-- readValue() reads oldest.
+Arduino library for a Time Length Compressed Buffer.
 
 
 ## Description
 
 **Experimental**
 
-This library is to store data in a circular buffer with Time Length Compression.
+This library is to store data in a (circular) buffer with Time Length Compression.
 
 The library is a spin of of the LogicAnalyzer library as it needs to store as much
 data as possible.
@@ -68,8 +63,24 @@ TODO: create + run performance sketch on hardware.
 ### Constructor
 
 - **TLCBuffer(uint32_t size)** create a circular buffer of size.
-- **void reset()** reset the circular buffer (todo really clear?)
+- **bool begin(char timeUnits = 'M')** returns true if allocation succeeded, resets
+internal variables. Sets the time units (see below).
+
+|  unit  |  unit  |  description  |
+|:------:|:------:|:--------------|
+|    u   |  1e-6  |  microseconds
+|    m   |  1e-3  |  milliseconds  (default)
+|    h   |  0.01  |  hundreds of a second
+|    t   |  0.10  |  tenths of a second
+|    s   |  1.00  |  second
+
+
+### Meta
+
 - **uint32_t size()** return size set in constructor.
+- **uint32_t count()** return internal counter of elements used.
+
+
 
 ### Read Write
 
@@ -84,13 +95,13 @@ TODO: create + run performance sketch on hardware.
 
 - improve documentation
 - test
-- keep it simple
-- add counter 
-
 
 #### Should
 
-- need bool begin(size) if allocate fails.
+- implement circular behaviour
+  - first get base buffer right (derived class circular?)
+  - readValue() reads oldest.
+  - need head / tail index.
 - investigate template version, first get one static version working.
 - switch between micros / millis (default) / seconds ?
 - handle period of 0 properly (any unit)

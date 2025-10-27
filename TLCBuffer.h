@@ -37,9 +37,10 @@ class TLCBuffer
       if (_times != NULL) free(_times);
     }
 
-    //  time units  
-    //  U = micros  M = Millis S = seconds T = Tenths of a second H = Hundreds of a second
-    bool begin(char timeUnits = 'M')
+    //  time units
+    //  u = micros  m = Millis s = seconds 
+    //  t = Tenths of a second h = Hundreds of a second
+    bool begin(char timeUnits = 'm')
     {
       if ((_buffer == NULL) || (_times == NULL))
       {
@@ -58,16 +59,22 @@ class TLCBuffer
 
     void writeValue(uint32_t value)
     {
-      //  do we have a new value?
-      if (value == _lastValue) return;
-      _lastValue = value;
-      //  write duration of previous value first.
-      uint32_t now = millis();
-      _times[_index++] = now - _lastTime;
+      //  update duration of last value first.
+      uint32_t now = getTime();
+      _times[_index] += (now - _lastTime);
       _lastTime = now;
-      //  buffer the next value in next free slot.
+      //  do we have a new value?
+      if (value == _lastValue) 
+      {
+        return;
+      }
+      _lastValue = value;
+      //  buffer the new value in next free slot.
+      //  TODO handle circular here
+      _index++;
       if (_index >= _size) _index = 0;
       _buffer[_index] = value;
+      _times[_index] = 0;
       if (_count < _size) _count++;
     }
 
@@ -93,15 +100,41 @@ class TLCBuffer
       return _count;
     }
 
+    bool empty()
+    {
+      return (_count == 0);
+    }
+
+    bool full()
+    {
+      return (_count == _size);
+    }
+
+    char getTimeUnit()
+    {
+      return _timeUnits;
+    }
+
   private:
-    uint32_t * _buffer;
-    uint32_t * _times;
-    uint32_t _size;
-    uint32_t _index;
-    uint32_t _count;
-    char     _timeUnits;
-    uint32_t _lastTime;
-    uint32_t _lastValue;
+    uint32_t * _buffer = NULL;
+    uint32_t * _times = NULL;
+    uint32_t _size    = 0;
+    uint32_t _index   = 0;
+    uint32_t _count   = 0;
+    char     _timeUnits = 'm';
+    uint32_t _lastTime  = 0;
+    uint32_t _lastValue = 0;
+    
+    uint32_t getTime()
+    {
+      if (_timeUnits == 'm') return millis();
+      if (_timeUnits == 'u') return micros();
+      if (_timeUnits == 's') return millis() / 1000;
+      if (_timeUnits == 'h') return millis() / 10;
+      if (_timeUnits == 't') return millis() / 100;
+      //  default.
+      return millis();
+    }
 };
 
 

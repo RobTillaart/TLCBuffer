@@ -1,7 +1,7 @@
 {
   "name": "TLCBuffer",
   "keywords": "",
-  "description": "Arduino library for a Time Length Compressed Circular Buffer.",
+  "description": "Arduino library for a Time Length Compressed Buffer.",
   "authors":
   [
     {

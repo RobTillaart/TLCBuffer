@@ -49,8 +49,8 @@ unittest(test_constructor)
 {
   TLCBuffer TLCB(10);
   
-  asserEqual(10, TLCB.size());
-  asserEqual(0, TLCB.count());
+  assertEqual(10, TLCB.size());
+  assertEqual(0, TLCB.count());
   
 }
 
