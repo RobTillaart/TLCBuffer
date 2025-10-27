@@ -72,8 +72,8 @@ again as I do not need that yet. It might be implemented in the future.
 
 - https://github.com/RobTillaart/LogicAnalyzer
   - see logicAnalyzer_4_channel_buffer.ino example
-- https://github.com/RobTillaart/RLCBuffer uses counter to compress
-- https://github.com/RobTillaart/TLCBuffer uses duration to compress
+- https://github.com/RobTillaart/RLCBuffer uses counter to compress data
+- https://github.com/RobTillaart/TLCBuffer uses duration to compress data
 
 
 ### Tested
@@ -83,7 +83,9 @@ Tested on Arduino UNO R3
 
 ### Performance
 
-TODO: create + run performance sketch on hardware.
+See performance sketch folder.
+
+Note: the performance of begin() depends on the size of the buffer.
 
 
 ## Interface
