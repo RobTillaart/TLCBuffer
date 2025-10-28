@@ -22,9 +22,14 @@ This library is to store data in a buffer with Time Length Compression.
 
 The library is a spin of of the LogicAnalyzer library as it needs to store as much
 data as possible in limited RAM.
+
+The library works best for measurements that stay stable for longer times.
+If the measurements fluctuate a lot, the library is not suitable for the job.
+
 The data elements of the initial version are uint32_t as that matches my needs for now.
 In the future the library will be a template class supporting any data type.
 
+This library is strongly related to RLCBuffer, that uses run length compression.
 
 #### Application Measurements
 
@@ -78,7 +83,7 @@ again as I do not need that yet. It might be implemented in the future.
 
 ### Tested
 
-Tested on Arduino UNO R3
+Tested on Arduino UNO R3.
 
 
 ### Performance
@@ -111,6 +116,10 @@ Finally it sets the time units (see below), where invalid values are handled as 
 |    s   |  1.00  |  second
 | other  |  1e-3  |  milliseconds (fall back)
 
+Note that the RAM used by the buffer is 2 uint32_t (8 bytes) per element,
+one for the duration, and one for the value. 
+One could change the duration to an uint16_t to save some RAM.
+
 
 ### Meta
 
@@ -123,9 +132,11 @@ Finally it sets the time units (see below), where invalid values are handled as 
 
 ### Read Write
 
-- **void writeData(uint32_t value)**
-- **uint32_t readData(uint32_t index)**
-- **uint32_t readDuration(uint32_t index)**
+- **void writeData(uint32_t value)** add an element to buffer.
+- **uint32_t readData(uint32_t index)** read an element.
+- **uint32_t readDuration(uint32_t index)** read the duration of an element.
+
+**writeData()** will increase the duration if the value equals the previous one. Otherwise it uses a new entry.
 
 ### Error
 
@@ -137,7 +148,7 @@ Finally it sets the time units (see below), where invalid values are handled as 
 
 - improve documentation
 - test functionality
--
+- keep in sync with RLCBuffer.
 
 #### Should
 
