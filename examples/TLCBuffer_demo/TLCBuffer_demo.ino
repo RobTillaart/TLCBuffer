@@ -28,7 +28,7 @@ void setup()
 
   Serial.print("SIZE:\t");  Serial.println(TLCB.size());
   Serial.print("COUNT:\t");  Serial.println(TLCB.count());
-  Serial.print("INDEX:\t");  Serial.println(measurements.index());
+  Serial.print("INDEX:\t");  Serial.println(TLCB.index());
   Serial.println();
 
   //  fill the buffer with random numbers and generate different timestamps
