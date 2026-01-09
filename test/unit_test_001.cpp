@@ -56,7 +56,8 @@ unittest(test_constructor)
   {
     TLCB.writeData(i);
   }
-  assertEqual(5, TLCB.count());
+  //  note first element == zero !!
+  assertEqual(4, TLCB.count());
 }
 
 
