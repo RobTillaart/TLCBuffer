@@ -48,10 +48,10 @@ unittest(test_constants)
 unittest(test_constructor)
 {
   TLCBuffer TLCB(10);
-  
+
   assertEqual(10, TLCB.size());
   assertEqual(0, TLCB.count());
-  
+
 }
 
 
