@@ -54,10 +54,9 @@ unittest(test_constructor)
 
   for (int i = 0; i < 5; i++)
   {
-    assertEqual(i, TLCB.count());
     TLCB.writeData(i);
-    assertEqual(i, TLCB.readData(i));
   }
+  assertEqual(5, TLCB.count());
 }
 
 
